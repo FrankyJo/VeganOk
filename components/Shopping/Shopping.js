@@ -9,8 +9,27 @@ class Shopping {
         const productsStore = localStorageUtil.getProducts();
         let htmlCatalog = '';
         let sumCatalog = 0;
-        // const totalPrice = (input) => parseInt(input.value) * parseInt(price);
+        
+        
+        let quantityInput = document.getElementsByClassName('cart_quantity_input')
+        for (let i = 0; i < quantityInput.length; i++) {
+            let input = quantityInput[i]
+            input.addEventListener('change', quantityChanged)
+        }
 
+        function quantityChanged(event) {
+            let input = event.target
+            if (isNaN(input.value) || input.value <= 0) {
+                input.value = 1
+            }
+            updateCartTotal()
+        }
+
+        function updateCartTotal() {
+            sumCatalog += parseInt(price) * parseInt(quantityInput.value);
+        }
+        
+        
         CATALOG.forEach(({id, img, name, price}) => {
             if (productsStore.indexOf(id) !== -1) {
                 htmlCatalog += `
@@ -19,15 +38,12 @@ class Shopping {
                         <div class="shopping_name">${name}</div>
                         <div class="shopping_price">${parseInt(price).toLocaleString()} грн</div>
                         <div class="input_group">
-                            <input type="number" value="1" class="input" id="input.${id}" min="1" max="100" />
+                            <input type="number" value="1" class="cart_quantity_input" id="input" min="1" max="100" />
                         </div>
                         
                     </div>
                 `;
-            
-                // sumCatalog += parseInt(price) * parseInt(document.getElementById(`input.${id}`).value);
-
-                sumCatalog += parseInt(price);
+           
               
             }
         });
